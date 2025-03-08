@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Device Info Collector</title>
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@2.0.2/dist/ua-parser.pack.min.js"></script>
+</head>
+<body>
+  <h1>Collecting Device Information...</h1>
+  <div id="info" ></info>
+  <script>
+    async function collectDeviceInfo() {
+      const data = {
+        name: 'label1',
+        userAgent: navigator.userAgent,
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        },
+        deviceScaleFactor: window.devicePixelRatio,
+        hasTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+        env: {},
+        userAgentData: {}
+      };
+
+      // User Agent 파싱
+      const parser = new UAParser();
+      const uaResult = parser.getResult();
+
+      // 고급 정보 수집
+      let highEntropyData = {};
+      if (navigator.userAgentData?.getHighEntropyValues) {
+        try {
+          highEntropyData = await navigator.userAgentData.getHighEntropyValues([
+            'platformVersion',
+            'fullVersionList'
+          ]);
+        } catch (error) {
+          console.error('High entropy data error:', error);
+        }
+      }
+
+      // 환경 정보 구성
+      data.env = {
+        os: uaResult.os.name || navigator.platform,
+        br_ln: navigator.language,
+        br_sr: `${window.innerWidth}x${window.innerHeight}`,
+        device_sr: `${Math.round(screen.width * window.devicePixelRatio)}x${Math.round(screen.height * window.devicePixelRatio)}`,
+        platform_type: 'web',
+        device_pr: window.devicePixelRatio,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        ch_pltf: navigator.userAgentData?.platform || '',
+        ch_mob: navigator.userAgentData?.mobile || false,
+        ch_mdl: uaResult.device.model || '',
+        ch_arch: '',
+        ch_pltfv: highEntropyData.platformVersion || '',
+        ch_fvls: highEntropyData.fullVersionList || []
+      };
+
+      // UserAgent 데이터
+      data.userAgentData = {
+        brands: navigator.userAgentData?.brands || [],
+        mobile: navigator.userAgentData?.mobile || false,
+        platform: navigator.userAgentData?.platform || ''
+      };
+      var paragraph = document.getElementById("info");
+        var text = document.createTextNode(JSON.stringify(data, null, 2));
+
+        paragraph.appendChild(text);
+      // 서버로 데이터 전송
+    //   try {
+    //     const response = await fetch('/collect', {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify(data)
+    //     });
+        
+    //     const result = await response.json();
+    //     if (result.redirect) {
+    //       window.location.href = result.redirect;
+    //     }
+    //   } catch (error) {
+    //     console.error('Submission error:', error);
+    //   }
+    }
+
+    // 페이지 로드 시 정보 수집 시작
+    collectDeviceInfo();
+  </script>
+</body>
+</html>
