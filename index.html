@@ -1,86 +1,92 @@
 <html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>모바일 페이지</title>
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@2.0.2/dist/ua-parser.pack.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios@1.8.2/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-<style>
-/* 기본 스타일 초기화 */
-body, h1, h2, h3, p, ul, li {
-margin: 0;
-padding: 0;
-}
-body {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>모바일 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@2.0.2/dist/ua-parser.pack.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.8.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <style>
+      /* 기본 스타일 초기화 */
+      body,
+      h1,
+      h2,
+      h3,
+      p,
+      ul,
+      li {
+        margin: 0;
+        padding: 0;
+      }
+      body {
         font-family: sans-serif;
         line-height: 1.6;
         background-color: #f4f4f4;
         color: #333;
-    }
+      }
 
-    /* 헤더 스타일 */
-    header {
+      /* 헤더 스타일 */
+      header {
         background-color: #333;
         color: #fff;
         padding: 10px;
         text-align: center;
-    }
+      }
 
-    /* 내비게이션 스타일 */
-    nav ul {
+      /* 내비게이션 스타일 */
+      nav ul {
         background-color: #ddd;
         list-style: none;
         padding: 10px;
         text-align: center;
-    }
+      }
 
-    nav li {
+      nav li {
         display: inline;
         margin: 0 10px;
-    }
+      }
 
-    nav a {
+      nav a {
         text-decoration: none;
         color: #333;
-    }
+      }
 
-    /* 메인 콘텐츠 스타일 */
-    main {
+      /* 메인 콘텐츠 스타일 */
+      main {
         padding: 20px;
-    }
+      }
 
-    section {
+      section {
         margin-bottom: 20px;
-    }
+      }
 
-    /* 푸터 스타일 */
-    footer {
+      /* 푸터 스타일 */
+      footer {
         background-color: #333;
         color: #fff;
         text-align: center;
         padding: 10px;
         position: fixed; /* 화면 하단에 고정 */
-        bottom: 0;        /* 화면 하단에 위치 */
-        width: 100%;       /* 전체 너비 */
-    }
+        bottom: 0; /* 화면 하단에 위치 */
+        width: 100%; /* 전체 너비 */
+      }
 
-    p {
-            word-wrap: break-word; /* 긴 단어 줄바꿈 */
-            overflow-wrap: break-word; /* 긴 URL 줄바꿈 (최신 브라우저) */
-    }
+      p {
+        word-wrap: break-word; /* 긴 단어 줄바꿈 */
+        overflow-wrap: break-word; /* 긴 URL 줄바꿈 (최신 브라우저) */
+      }
 
-    /* 미디어 쿼리: 작은 화면에 대한 스타일 */
-    @media (max-width: 600px) {
+      /* 미디어 쿼리: 작은 화면에 대한 스타일 */
+      @media (max-width: 600px) {
         nav li {
-            display: block;
-            margin: 5px 0;
+          display: block;
+          margin: 5px 0;
         }
-    }
+      }
 
-    #sendButton {
+      #sendButton {
         padding: 10px 20px;
-        background-color: #4CAF50; /* Green */
+        background-color: #4caf50; /* Green */
         border: none;
         color: white;
         text-align: center;
@@ -89,105 +95,142 @@ body {
         font-size: 16px;
         cursor: pointer;
         border-radius: 5px;
-    }
-</style>
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>모바일 페이지</h1>
+    </header>
 
-</head>
-<body>
-<header>
-<h1>모바일 페이지</h1>
-</header>
-
-
-<main>
-  <section>
-    <h2>결과 전송</h2>
-    <button id="sendButton" onclick="send()">데이터 전송</button>
-</section>
-    <section>
+    <main>
+      <section>
+        <h2>결과 전송</h2>
+        <button id="sendButton" onclick="send()">데이터 전송</button>
+      </section>
+      <section>
         <h2>정보</h2>
         <p id="info"></p>
-    </section>
-    
-    
-</main>
+      </section>
+    </main>
 
-<footer>
-    <p>© 2024 모바일 데이터 수집</p>
-</footer>
-<script>
-  let query = '';
-    async function collectDeviceInfo() {
-      const data = {
-        userAgent: navigator.userAgent,
-        viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight
-        },
-        deviceScaleFactor: window.devicePixelRatio,
-        hasTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-        env: {},
-        userAgentData: {}
-      };
+    <footer>
+      <p>© 2024 모바일 데이터 수집</p>
+    </footer>
+    <script>
+      let query = "";
 
-      // User Agent 파싱
-      const parser = new UAParser();
-      const uaResult = parser.getResult();
+      async function collectDeviceInfo() {
+        const nav = navigator;
+        const data = {}; // 정보를 저장할 객체
 
-      // 고급 정보 수집
-      let highEntropyData = {};
-      if (navigator.userAgentData?.getHighEntropyValues) {
-        try {
-          highEntropyData = await navigator.userAgentData.getHighEntropyValues([
-            'platformVersion',
-            'fullVersionList'
-          ]);
-        } catch (error) {
-          console.error('High entropy data error:', error);
+        console.log(
+          "aa",
+          await navigator.userAgentData.getHighEntropyValues(["architecture"])
+        );
+
+        for (const prop in nav) {
+          try {
+            const value = nav[prop];
+
+            if (typeof value === "function") {
+              // ⚠️ 인자가 필요 없는 함수만 실행
+              if (value.length === 0) {
+                let result = value.call(navigator);
+
+                // Promise를 반환하면 대기 후 결과 저장
+                if (result instanceof Promise) {
+                  result = await result;
+                }
+
+                data[prop] = result;
+              } else {
+                data[prop] = "[Function: requires arguments]";
+              }
+            } else {
+              data[prop] = value;
+            }
+          } catch (error) {
+            data[prop] = `[Error: ${error.message}]`;
+          }
         }
+
+        // High Entropy Values 추가 수집
+        if (navigator.userAgentData?.getHighEntropyValues) {
+          try {
+            const highEntropyValues =
+              await navigator.userAgentData.getHighEntropyValues([
+                "architecture",
+                "bitness",
+                "formFactor",
+                "fullVersionList",
+                "model",
+                "platformVersion",
+                "uaFullVersion", // Deprecated
+                "wow64",
+              ]);
+
+            data.highEntropyValues = highEntropyValues;
+          } catch (error) {
+            console.error("High Entropy Data Error:", error);
+            data.highEntropyValues = `[Error: ${error.message}]`;
+          }
+        }
+
+        // JSON 데이터 생성 및 query 저장
+        const jsonData = JSON.stringify(data, null, 2);
+        query = encodeURI(jsonData);
+
+        // JSON 데이터를 테이블로 변환 후 추가
+        createTable(data);
+
+        console.log("JSON Data:", jsonData);
+        console.log("Encoded URI:", query);
       }
 
-      // 환경 정보 구성
-      data.env = {
-        os: uaResult.os.name || navigator.platform,
-        br_ln: navigator.language,
-        br_sr: `${window.innerWidth}x${window.innerHeight}`,
-        device_sr: `${Math.round(screen.width * window.devicePixelRatio)}x${Math.round(screen.height * window.devicePixelRatio)}`,
-        platform_type: 'web',
-        device_pr: window.devicePixelRatio,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        ch_pltf: navigator.userAgentData?.platform || '',
-        ch_mob: navigator.userAgentData?.mobile || false,
-        ch_mdl: uaResult.device.model || '',
-        ch_arch: '',
-        ch_pltfv: highEntropyData.platformVersion || '',
-        ch_fvls: highEntropyData.fullVersionList || []
-      };
+      // JSON 데이터를 HTML 테이블로 변환하는 함수
+      function createTable(data) {
+        const tableContainer = document.getElementById("info");
+        if (!tableContainer) return;
 
-      // UserAgent 데이터
-      data.userAgentData = {
-        brands: navigator.userAgentData?.brands || [],
-        mobile: navigator.userAgentData?.mobile || false,
-        platform: navigator.userAgentData?.platform || ''
-      };
-      var paragraph = document.getElementById("info");
-      var text = document.createTextNode(JSON.stringify(data, null, 2));
+        const table = document.createElement("table");
+        table.border = "1";
+        table.style.borderCollapse = "collapse";
+        table.style.width = "100%";
+        table.style.marginTop = "20px";
 
-      paragraph.appendChild(text);
+        for (const key in data) {
+          const row = document.createElement("tr");
 
-      query = encodeURI(JSON.stringify(data))
-     
-    }
+          const keyCell = document.createElement("td");
+          keyCell.textContent = key;
+          keyCell.style.fontWeight = "bold";
+          keyCell.style.padding = "5px";
+          keyCell.style.border = "1px solid black";
 
-    // 페이지 로드 시 정보 수집 시작
-    collectDeviceInfo();
+          const valueCell = document.createElement("td");
+          valueCell.textContent = JSON.stringify(data[key]);
+          valueCell.style.padding = "5px";
+          valueCell.style.border = "1px solid black";
 
+          row.appendChild(keyCell);
+          row.appendChild(valueCell);
+          table.appendChild(row);
+        }
 
-    function send() {
-      if(!query) return;
-      window.open('http://211.188.56.235:3000/ua?info=' + query, '_blank')
-    }
-  </script>
+        // 기존 테이블이 있으면 제거 후 새 테이블 추가
+        tableContainer.innerHTML = "";
+        tableContainer.appendChild(table);
+      }
 
-</body>
+      // 페이지 로드 시 정보 수집
+      collectDeviceInfo();
+
+      // 전송 함수
+      function send() {
+        if (!query) return;
+        window.open("http://211.188.56.235:3000/ua?info=" + query, "_blank");
+      }
+    </script>
+  </body>
 </html>
