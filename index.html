@@ -138,9 +138,6 @@
 
         const data = {}; // 정보를 저장할 객체
 
-
-
-
         for (const prop in nav) {
           try {
             const value = nav[prop];
@@ -190,8 +187,8 @@
         const jsonData = JSON.stringify(data, null, 2);
         query = encodeURI(jsonData);
 
-        data[screen]  = screen;
-        data[highEntropyValues] = highEntropyValues;
+        data['screen']  = screen;
+        data['highEntropyValues'] = highEntropyValues;
 
         screen = encodeURI(JSON.stringify(screen, null, 2))
         highEntropyValues = highEntropyValues ?  encodeURI(JSON.stringify(highEntropyValues, null, 2)) : null
