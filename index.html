@@ -118,11 +118,27 @@
       <p>© 2024 모바일 데이터 수집</p>
     </footer>
     <script>
-      let query = "";
+      let query;
+      let screen;
+      let highEntropyValues;
 
       async function collectDeviceInfo() {
+
+        
         const nav = navigator;
+        screen = {
+            viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          },
+          deviceScaleFactor: window.devicePixelRatio,
+          hasTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+        }
+        
+
         const data = {}; // 정보를 저장할 객체
+
+
 
 
         for (const prop in nav) {
@@ -154,7 +170,7 @@
         // High Entropy Values 추가 수집
         if (navigator.userAgentData?.getHighEntropyValues) {
           try {
-            const highEntropyValues =
+            highEntropyValues =
               await navigator.userAgentData.getHighEntropyValues([
                 "architecture",
                 "bitness",
@@ -165,11 +181,8 @@
                 "uaFullVersion", // Deprecated
                 "wow64",
               ]);
-
-            data.highEntropyValues = highEntropyValues;
           } catch (error) {
             console.error("High Entropy Data Error:", error);
-            data.highEntropyValues = `[Error: ${error.message}]`;
           }
         }
 
@@ -177,7 +190,13 @@
         const jsonData = JSON.stringify(data, null, 2);
         query = encodeURI(jsonData);
 
+        data[screen]  = screen;
+        data[highEntropyValues] = highEntropyValues;
+
+        screen = encodeURI(JSON.stringify(screen, null, 2))
+        highEntropyValues = highEntropyValues ?  encodeURI(JSON.stringify(highEntropyValues, null, 2)) : null
         // JSON 데이터를 테이블로 변환 후 추가
+
         createTable(data);
 
         console.log("JSON Data:", jsonData);
@@ -225,7 +244,7 @@
       // 전송 함수
       function send() {
         if (!query) return;
-        window.open("http://211.188.56.235:3000/ua?info=" + query, "_blank");
+        window.open("http://211.188.56.235:3000/ua?navigator=" + query + "&screen=" + screen + "&high_entropy=" + highEntropyValues, "_blank");
       }
     </script>
   </body>
